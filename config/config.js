@@ -14,7 +14,6 @@ configModule.db.seederStorage = "sequelize";
 
 configModule[process.env.NODE_ENV] = configModule.db;
 
-console.log(configModule);
 console.log(process.env.NODE_ENV);
 
 module.exports = configModule;

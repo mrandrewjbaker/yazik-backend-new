@@ -1,6 +1,10 @@
 import {
-  Model
+  Model, DataTypes, Optional,
 } from 'sequelize';
+import { sequelizeResource } from '../resources/resource.sequelize';
+
+import bcrypt from 'bcrypt';
+
 
 interface IUserProperties {
   id: number;
@@ -12,14 +16,15 @@ interface IUserProperties {
   updatedAt?: Date;
 }
 
-module.exports = (sequelize: any, DataTypes: any) => {
-  class user extends Model<IUserProperties>
+interface IUserPropertiesCreate extends Optional<IUserProperties, 'id'> {}
+
+  class user extends Model<IUserProperties, IUserPropertiesCreate>
   implements IUserProperties{
-    id!: number;
-    firstName!: string;
-    lastName!: string;
-    email!: string;
-    password!: string;
+    declare id: number;
+    declare firstName: string;
+    declare lastName: string;
+    declare email: string;
+    declare password: string;
     static associate(models: any){
       
     }
@@ -48,8 +53,21 @@ module.exports = (sequelize: any, DataTypes: any) => {
       allowNull: false
     }
   },{
-    sequelize,
+    sequelize: sequelizeResource,
     modelName: 'user'
   });
-  return user;
-}
+  export default user;
+
+  const userAuthRegister = async (email: string, password: string) => {
+    const result = await user.create({
+      firstName: '',
+      lastName: '',
+      email: email,
+      password: password
+    });
+    return result;
+  }
+
+  export { 
+    userAuthRegister
+  };

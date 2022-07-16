@@ -6,82 +6,166 @@ const { exec, execSync } = require("child_process");
 //Database config
 const db = require("./config/config");
 
-console.log("Starting Yazik...");
+const httpServerPath = "./src/bin/www.ts";
 
-const serverPath = "./src/server.ts";
+const cliColors = {
+  reset: "\x1b[0m",
+  text: {
+    red: "\x1b[31m",
+    orange: "\x1b[33m",
+    yellow: "\x1b[33m",
+    green: "\x1b[32m",
+    blue: "\x1b[34m",
+    indigo: "\x1b[35m",
+    violet: "\x1b[36m",
+    white: "\x1b[37m",
+    gray: "\x1b[90m",
+    black: "\x1b[90m",
+  },
+  background: {
+    red: "\x1b[41m",
+    orange: "\x1b[43m",
+    yellow: "\x1b[43m",
+    green: "\x1b[42m",
+    blue: "\x1b[44m",
+    indigo: "\x1b[45m",
+    violet: "\x1b[46m",
+    white: "\x1b[47m",
+    gray: "\x1b[100m",
+    black: "\x1b[100m",
+  },
+  bold: "\x1b[1m",
+  underline: "\x1b[4m",
+};
+
+const startUpMessage = () => {
+  process.stdout.write("\033c");
+  console.log(
+    cliColors.background.blue + "Starting up Yazik API..." + cliColors.reset
+  );
+  console.log(cliColors.background.blue + "version 0.1.0" + cliColors.reset);
+};
 
 const startupDatabase = async (cleanDatabase) => {
   const startupDatabaseCommand = cleanDatabase
     ? "sequelize db:drop && sequelize db:create"
     : "sequelize db:create";
-  console.log("\x1b[32m%s\x1b[0m", `Executing startup database command`);
+  console.log(
+    cliColors.text.orange +
+      "Executing startup database command" +
+      cliColors.reset
+  );
   try {
     const execStartupDatabaseCommand = execSync(startupDatabaseCommand);
-    console.log("\x1b[32m%s\x1b[0m", `Startup database command executed`);
+    console.log(
+      cliColors.text.green +
+        "   ✅ Startup database command executed successfully" +
+        cliColors.reset
+    );
   } catch {
     console.log(
-      "\x1b[31m%s\x1b[0m",
-      "Error executing startup database command"
+      cliColors.text.red +
+        "   ❌ Error executing startup database command" +
+        cliColors.reset
     );
   }
 };
 
 const startupTypescript = async () => {
   const startupTypescriptCommand = "tsc -p tsconfig.json";
-  console.log("\x1b[32m%s\x1b[0m", `Executing startup typescript command`);
+  console.log(
+    cliColors.text.orange +
+      "Executing startup typescript command" +
+      cliColors.reset
+  );
   try {
     const execStartupTypescriptCommand = execSync(startupTypescriptCommand);
-    console.log("\x1b[32m%s\x1b[0m", `Startup typescript command executed`);
+    console.log(
+      cliColors.text.green +
+        "   ✅ Startup typescript command executed successfully" +
+        cliColors.reset
+    );
   } catch (error) {
     console.log(
-      "\x1b[31m%s\x1b[0m",
-      `Error executing startup typescript command`
+      cliColors.text.red +
+        "   ❌ Error executing startup typescript command" +
+        cliColors.reset
     );
   }
 };
 
 const startupDatabaseMigrations = async () => {
   const startupDatabaseMigrationsCommand =
-    "sequelize db:migrate --migrations-path ./src/migrations";
+    "sequelize db:migrate --migrations-path ./dist/migrations";
+
   console.log(
-    "\x1b[32m%s\x1b[0m",
-    `Executing startup database migrations command`
+    cliColors.text.orange +
+      "Executing startup database migrations command" +
+      cliColors.reset
   );
   try {
     const execStartupDatabaseMigrationsCommand = execSync(
       startupDatabaseMigrationsCommand
     );
     console.log(
-      "\x1b[32m%s\x1b[0m",
-      `Startup database migrations command executed`
+      cliColors.text.green +
+        "   ✅ Startup database migrations command executed successfully" +
+        cliColors.reset
     );
   } catch (error) {
     console.log(
-      "\x1b[31m%s\x1b[0m",
-      "Error executing startup database migrations command"
+      cliColors.text.red +
+        "   ❌ Error executing startup database migrations command" +
+        cliColors.reset
     );
   }
 };
 
 const startupDatabaseSeeders = async () => {
   const startupDatabaseSeedersCommand =
-    "sequelize db:seed --seeders-path ./src/seeders";
+    "sequelize db:seed --seeders-path ./dist/seeders";
   console.log(
-    "\x1b[32m%s\x1b[0m",
-    `Executing startup database seeders command`
+    cliColors.text.orange +
+      "Executing startup database seeders command" +
+      cliColors.reset
   );
   try {
     const execStartupDatabaseSeedersCommand = execSync(
       startupDatabaseSeedersCommand
     );
     console.log(
-      "\x1b[32m%s\x1b[0m",
-      `Startup database seeders command executed`
+      cliColors.text.green +
+        "   ✅ Startup database seeders command executed successfully" +
+        cliColors.reset
     );
   } catch (error) {
     console.log(
-      "\x1b[31m%s\x1b[0m",
-      "Error executing startup database seeders command"
+      cliColors.text.red +
+        "   ❌ Error executing startup database seeders command" +
+        cliColors.reset
+    );
+  }
+};
+
+const startupHttpServer = async () => {
+  const startupServerCommand = `nodemon ${httpServerPath}`;
+  console.log(
+    cliColors.text.orange +
+      "Executing startup HTTP Server command" +
+      cliColors.reset
+  );
+  try {
+    const execStartupServerCommand = execSync(startupServerCommand);
+    console.log(
+      cliColors.text.green +
+        "   ✅ Startup HTTP Server command executed successfully" +
+        cliColors.reset
+    );
+  } catch (error) {
+    console.log(
+      cliColors.text.red +
+        "   ❌ Error executing startup HTTP Server command" +
+        cliColors.reset
     );
   }
 };
@@ -92,7 +176,6 @@ require("./config/config");
 if (process.env.NODE_ENV === "production") {
 } else {
   let cleanDatabase = false;
-  console.log(process.argv);
   if (process.argv[2] && process.argv[2] === "test") {
     process.env.NODE_ENV = "test";
     cleanDatabase = true;
@@ -101,6 +184,7 @@ if (process.env.NODE_ENV === "production") {
     cleanDatabase = true;
   }
 
+  startUpMessage();
   startupDatabase(cleanDatabase);
   startupTypescript();
   startupDatabaseMigrations();
