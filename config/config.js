@@ -7,7 +7,7 @@ let configModule = {
     database: process.env.DBNAME,
     databaseTest: process.env.DBNAME + "_test",
     port: Number(process.env.DBPORT),
-    dialect: "postgres",
+    dialect: "mysql",
   },
 };
 configModule.db.seederStorage = "sequelize";

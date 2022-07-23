@@ -72,7 +72,7 @@ const startupDatabase = async (cleanDatabase) => {
 };
 
 const startupTypescript = async () => {
-  const startupTypescriptCommand = "tsc -p tsconfig.json";
+  const startupTypescriptCommand = "rm -rf ./dist/ && tsc -p tsconfig.json";
   console.log(
     cliColors.text.orange +
       "Executing startup typescript command" +
@@ -96,7 +96,7 @@ const startupTypescript = async () => {
 
 const startupDatabaseMigrations = async () => {
   const startupDatabaseMigrationsCommand =
-    "sequelize db:migrate --migrations-path ./dist/migrations";
+    "sequelize db:migrate --migrations-path ./dist/src/migrations";
 
   console.log(
     cliColors.text.orange +
@@ -123,7 +123,7 @@ const startupDatabaseMigrations = async () => {
 
 const startupDatabaseSeeders = async () => {
   const startupDatabaseSeedersCommand =
-    "sequelize db:seed --seeders-path ./dist/seeders";
+    "sequelize db:seed:all --seeders-path ./dist/src/seeders";
   console.log(
     cliColors.text.orange +
       "Executing startup database seeders command" +
